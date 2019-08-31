@@ -8,8 +8,8 @@ Timer pow_timer;
 #define MIN_TEMP    18
 
 /*wifi module*/
-#define WIFI_RESET_PIN    8
-#define POWER_PIN         13
+#define WIFI_RESET_PIN    4
+#define POWER_PIN         5
 
 
 #define ENABLE_NETWORK
@@ -18,7 +18,7 @@ Timer pow_timer;
 
 #define HIGH_TMP    25
 #define LOW_TMP     17
-#define DHTPIN 7     // what digital pin we're connected to
+#define DHTPIN      8   // what digital pin we're connected to
 
 
 typedef struct {
@@ -38,15 +38,15 @@ void setup() {
 
   /*The serial pins will now be used by the wifi module so serial debug is no
     longer an option in this project*/
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   pinMode(POWER_PIN, OUTPUT);
-  digitalWrite(POWER_PIN, LOW);
+  digitalWrite(POWER_PIN, HIGH);
   //setup buzzer
   pinMode(A3, OUTPUT);
   //Set low for grounding buzzer
   digitalWrite(A3, LOW);
-  analogWrite(A0, 0);
+  //analogWrite(A0, 0);
 
   buzzer(true);
   delay(100);
@@ -74,7 +74,7 @@ void setup() {
 
 void loop() {
 
-  delay(5000);
+  delay(100);
   get_env_data();
   report_env();
   check_alarm();
@@ -153,7 +153,7 @@ void connect_wifi()
 {
   Serial.write("AT+CWMODE=3\r\n");
   delay(1000);
-  Serial.write("AT+CWJAP=\"fudgeNet2G\",\"ancienthill347\"\r\n");
+  Serial.write("AT+CWJAP=\"Fudge_garden\",\"ancienthill347\"\r\n");
   /*wait for the connection*/
   delay(10000);
 }
@@ -189,8 +189,8 @@ void send_get_data()
 void buzzer(bool state)
 {
   if (state) {
-    analogWrite(A0, 128);
+    //analogWrite(A0, 128);
   } else {
-    analogWrite(A0, 0);
+    //analogWrite(A0, 0);
   }
 }
