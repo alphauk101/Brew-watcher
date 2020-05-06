@@ -5,7 +5,7 @@
 #include "Timer.h"
 
 Timer pow_timer;
-#define TIMER_EXP   (1 * 60000)
+#define TIMER_EXP   (30 * 60000)
 #define MAX_TEMP    22
 #define MIN_TEMP    18
 
@@ -108,15 +108,14 @@ void setup() {
 
   /*run this function periodically*/
   pow_timer.every(TIMER_EXP, check_power_state);
+
+   check_power_state();
 }
 
 
 void loop() {
 
-  delay(5000);
-  get_env_data();
-  report_env();
-  check_alarm();
+  delay(1000);
 
   pow_timer.update();
 }
@@ -151,18 +150,22 @@ void check_alarm()
 
 void check_power_state()
 {
+  get_env_data();
+  report_env();
+  check_alarm();
+
   /*So if the temp is above the required then switch off if below switch off*/
-  if(env_data.temp > MAX_TEMP)
+  if (env_data.temp > MAX_TEMP)
   {
     digitalWrite(POWER_PIN, LOW);
   }
 
-  if(env_data.temp < MIN_TEMP){
+  if (env_data.temp < MIN_TEMP) {
     digitalWrite(POWER_PIN, HIGH);
   }
 
   /*If we are somewhere between we are happy!*/
-  
+
 }
 
 void report_env()
@@ -261,9 +264,10 @@ void send_get_data()
 
   Serial.write("AT+CIPSTART=\"TCP\",\"attentii.co.uk\",80\r\n");
   delay(3000);
-  String para = "GET /leeweb/tempmon/tmpsub.php?tmhd=" + tmpstr + hmstr + " HTTP/1.1\r\nHost: attentii.co.uk\r\nConnection: close";
+  String para = "GET /leeweb/tempmon/tmpsub.php?tmhd=0020000" + tmpstr + hmstr + " HTTP/1.1\r\nHost: attentii.co.uk\r\nConnection: close";
   Serial.println("AT+CIPSEND=" + String(para.length() + 4));
   delay(1000);
+
   Serial.println(para);
   delay(1000);
   Serial.println("");
@@ -280,4 +284,3 @@ void buzzer(bool state)
     analogWrite(A0, 0);
   }
 }
-
